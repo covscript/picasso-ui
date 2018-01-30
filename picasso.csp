@@ -1,0 +1,34 @@
+package picasso
+import event
+import darwin
+struct activity
+    var on_draw=new event.event
+    var on_keydown=new event.event
+    var on_sizechanged=new event.event
+    function start()
+        var pic=darwin.get_drawable()
+        var old_width=pic.get_width()
+        var old_height=pic.get_height()
+        loop
+            if event.message_queue.poll()==event.message.exit
+                break
+            end
+            if darwin.is_kb_hit()
+                on_keydown.activate(darwin.get_kb_hit())
+            end
+            if old_width!=pic.get_width() || old_height!=pic.get_height
+                old_width=pic.get_width()
+                old_height=pic.get_height()
+                on_sizechanged.activate({old_width,old_height})
+            end
+            on_draw.activate(pic)
+            darwin.update_drawable()
+        end
+    end
+end
+function start(func)
+    darwin.load()
+    darwin.fit_drawable()
+    func()
+    darwin.exit()
+end
