@@ -14,17 +14,18 @@ struct event
     end
 end
 struct message_queue_type
-    var queue=new list
+    var queue=new array
     function poll()
         if !queue.empty()
-            var msg=queue.pop_front()
+            var msg=queue.front()
+            queue.pop_front()
             return msg
         else
             return null
         end
     end
     function push(msg)
-        queue.push_front(msg)
+        queue.push_back(msg)
     end
 end
 var message_queue=new message_queue_type

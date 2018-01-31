@@ -1,12 +1,10 @@
 import picasso
-import darwin
-function main()
-    var act=new picasso.activity
+struct main_activity
     var x=0
     var y=0
-    var pix=darwin.pixel('@',darwin.white,darwin.black)
+    var pix=picasso.darwin.pixel('@',picasso.darwin.white,picasso.darwin.black)
     function on_keydown(key)
-        switch char.tolower(key)
+        switch key.tolower()
             case 'w'
                 --y
             end
@@ -30,8 +28,11 @@ function main()
         pic.draw_pixel(x,y,pix)
         return true
     end
-    act.on_keydown.add_listener(on_keydown)
-    act.on_draw.add_listener(on_draw)
-    act.start()
+    function start()
+        var act=new picasso.activity
+        act.on_keydown.add_listener(on_keydown)
+        act.on_draw.add_listener(on_draw)
+        act.start()
+    end
 end
-picasso.start(main)
+picasso.start((new main_activity).start)
