@@ -1,4 +1,5 @@
 package picasso
+import regex
 import imgui
 using imgui
 struct event
@@ -36,7 +37,9 @@ struct base_window
     end
     function render()
         begin_window(title,win_opened,win_flags)
-            set_window_focus()
+            if !win_opened
+                on_close.activate(win_opened)
+            end
             on_layout()
             on_draw()
         end_window()
@@ -47,8 +50,10 @@ struct base_activity
     var window_list=new array
     var geometry={640,400}
     var enable_menu=false
+    var imgui_app=null
     function initialize() 
     end
+    var on_start=new event
     var on_present=new event
     function on_menu_present()
     end
@@ -61,7 +66,8 @@ struct base_activity
         window_list.push_back(win)
     end
     function start()
-        var imgui_app=window_application(geometry.at(0),geometry.at(1),title)
+        imgui_app=window_application(geometry.at(0),geometry.at(1),title)
+        on_start.activate(this)
         loop
             if imgui_app.is_closed()
                 on_close()
@@ -90,6 +96,7 @@ struct message_box extends base_window
         text(message)
     end
     function on_draw() override
+        set_window_focus()
         spacing()
         if button("OK") || is_key_pressed(get_key_index(keys.enter))
             this.on_close.activate(null)
@@ -103,6 +110,7 @@ struct question_box extends base_window
         text(question)
     end
     function on_draw() override
+        set_window_focus()
         spacing()
         if button("Yes") || is_key_pressed(to_integer('Y'))
             this.on_close.activate(true)
@@ -115,7 +123,7 @@ struct question_box extends base_window
         end
     end
 end
-struct file_explorer extends window_base
+struct file_explorer extends base_window
     var path="."
     var message=new string
     var filters={}
