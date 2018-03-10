@@ -1,2 +1,2 @@
-# picasso-ui
-A simple console ui library
+# Picasso UI
+Picasso UI is a oop ui library written by CovScript.
