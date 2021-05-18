@@ -1,7 +1,12 @@
 package picasso
 
-import picasso_base.*
+import picasso_base as base
 import picasso_activity as activities
 import picasso_widget as widgets
 # import picasso_window as windows
 # import picasso_layout as layouts
+
+link simple_activity = base.simple_activity
+link simple_window = base.simple_window
+link linear_layout = base.linear_layout
+link application = base.application

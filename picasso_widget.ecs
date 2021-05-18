@@ -10,6 +10,16 @@ class text extends base.window_view
     end
 end
 
+class button extends base.window_view
+    var text = new string
+    var on_click = new base.event
+    function on_draw() override
+        if imgui.button(text + "##" + this.id)
+            on_click.activate(this)
+        end
+    end
+end
+
 class input extends base.window_view
     var text = new string
     var hint = new string

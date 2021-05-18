@@ -12,13 +12,8 @@ class single_page extends base.simple_activity
     function on_create() override
         window = this.app->make_view(base.simple_window)
         window->on_present.add_listener(on_present_handler)
-        this.add_view(*window)
+        window->add_flag(imgui.flags.no_title_bar)
+        this.add_view(window)
         window->show()
-    end
-    function add_widget(w)
-        window->add_view(w)
-    end
-    function get_view_by_id(id) override
-        return window->get_view_by_id(id)
     end
 end

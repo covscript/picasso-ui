@@ -1,3 +1,5 @@
+@charset: utf8
+
 import picasso as ui
 import imgui, imgui_font
 
@@ -5,15 +7,46 @@ var app = new ui.application {
     imgui.window_application(640, 400, "Picasso UI Test")
 }
 
-var act = app.add_activity(ui.activities.single_page)
+var input = null
 
-act->window->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
-act->add_widget(*app.make_view(ui.widgets.text, "text", {}))
-act->add_widget(*app.make_view(ui.widgets.input, "input", {}))
+block
+    var win = app.add_activity(ui.activities.single_page, "main1")->window
+    win->add_view(app.make_view(ui.widgets.text, "text"))
+    win->add_view(input = app.make_view(ui.widgets.input, "input"))
+    win->add_view(app.make_view(ui.widgets.button, "btn"))
+    win->views.btn->text = "打开Activity 2"
+    app.views.main1->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
+    app.views.main1->on_focus.add_listener([](obj, txt){
+        obj.window->views.input->text += txt
+    })
+    app.views.main1->on_focus.add_listener([](...args){
+        imgui.style_color_dark()
+        return args.size == 1
+    })
+    input->on_render.add_listener([win](txt){
+        win->views.text->text = "输入：" + txt
+    })
+    win->views.btn->on_click.add_listener([app](obj){
+        app.push("main2")
+    })
+end
 
-act->get_view_by_id("input")->on_render.add_listener([act](txt){
-    act->get_view_by_id("text")->text = txt
-})
+block
+    var win = app.add_activity(ui.activities.single_page, "main2")->window
+    win->add_view(app.make_view(ui.widgets.text, "text"))
+    win->add_view(app.make_view(ui.widgets.input, "input"))
+    win->add_view(app.make_view(ui.widgets.button, "btn"))
+    win->views.btn->text = "关闭Activity 2"
+    app.views.main2->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
+    app.views.main2->on_focus.add_listener([win, input](obj){
+        imgui.style_color_light()
+        win->views.text->text = "来自Activity 1：" + input->text
+        win->views.input->text = new string
+    })
+    win->views.btn->on_click.add_listener([app, win](obj){
+        app.pop(win->views.input->text)
+    })
+end
 
-app.push(act->id)
+app.push("main1")
 app.start()
