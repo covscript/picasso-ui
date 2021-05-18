@@ -7,12 +7,10 @@ var app = new ui.application {
     imgui.window_application(640, 400, "Picasso UI Test")
 }
 
-var input = null
-
 block
     var win = app.add_activity(ui.activities.single_page, "main1")->window
     win->add_view(app.make_view(ui.widgets.text, "text"))
-    win->add_view(input = app.make_view(ui.widgets.input, "input"))
+    win->add_view(app.make_view(ui.widgets.input, "input"))
     win->add_view(app.make_view(ui.widgets.button, "btn"))
     win->views.btn->text = "打开Activity 2"
     app.views.main1->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
@@ -23,11 +21,11 @@ block
         imgui.style_color_dark()
         return args.size == 1
     })
-    input->on_render.add_listener([win](txt){
+    win->views.input->on_render.add_listener([win](txt){
         win->views.text->text = "输入：" + txt
     })
-    win->views.btn->on_click.add_listener([app](obj){
-        app.push("main2")
+    win->views.btn->on_click.add_listener([win, app](obj){
+        app.push("main2", win->views.input->text)
     })
 end
 
@@ -38,9 +36,9 @@ block
     win->add_view(app.make_view(ui.widgets.button, "btn"))
     win->views.btn->text = "关闭Activity 2"
     app.views.main2->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
-    app.views.main2->on_focus.add_listener([win, input](obj){
+    app.views.main2->on_focus.add_listener([win](obj, txt){
         imgui.style_color_light()
-        win->views.text->text = "来自Activity 1：" + input->text
+        win->views.text->text = "来自Activity 1：" + txt
         win->views.input->text = new string
     })
     win->views.btn->on_click.add_listener([app, win](obj){

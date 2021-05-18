@@ -270,13 +270,17 @@ struct application
             return null
         end
     end
-    function push(id)
+    function push(...args)
+        if args.empty()
+            return
+        end
+        link id = args.pop_front()
         if views.exist(id)
             if !stack.empty()
                 stack.front->on_lost.activate(*stack.front)
             end
             link act = views.at(id)
-            act->on_focus.activate(*act)
+            act->on_focus.activate(*act, args...)
             stack.push_front(act)
         end
     end
