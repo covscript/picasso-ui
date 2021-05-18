@@ -15,11 +15,8 @@ block
     win->views.btn->text = "打开Activity 2"
     app.views.main1->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
     app.views.main1->on_focus.add_listener([](obj, txt){
-        obj.window->views.input->text += txt
-    })
-    app.views.main1->on_focus.add_listener([](...args){
         imgui.style_color_dark()
-        return args.size == 1
+        obj.window->views.input->text += txt
     })
     win->views.input->on_render.add_listener([win](txt){
         win->views.text->text = "输入：" + txt
@@ -46,5 +43,5 @@ block
     })
 end
 
-app.push("main1")
+app.push("main1", "你好世界！")
 app.start()
