@@ -1,0 +1,19 @@
+import picasso as ui
+import imgui, imgui_font
+
+var app = new ui.application {
+    imgui.window_application(640, 400, "Picasso UI Test")
+}
+
+var act = app.add_activity(ui.activities.single_page)
+
+act->window->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
+act->add_widget(*app.make_view(ui.widgets.text, "text", {}))
+act->add_widget(*app.make_view(ui.widgets.input, "input", {}))
+
+act->get_view_by_id("input")->on_render.add_listener([act](txt){
+    act->get_view_by_id("text")->text = txt
+})
+
+app.push(act->id)
+app.start()

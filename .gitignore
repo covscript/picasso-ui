@@ -4,3 +4,5 @@
 *.log
 # ImGui INI
 imgui.ini
+# ECS Outputs
+.ecs_output/

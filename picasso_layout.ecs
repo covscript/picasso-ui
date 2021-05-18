@@ -1,0 +1,13 @@
+import picasso_base.*
+
+class grid_layout extends window_view
+
+end
+
+class tabbar_layout extends window_view
+
+end
+
+class tabbar extends window_view
+    
+end
