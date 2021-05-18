@@ -5,6 +5,9 @@ import imgui
 
 class text extends base.window_view
     var text = new string
+    function construct(txt : string)
+        text = txt
+    end
     function on_draw() override
         imgui.text(text)
     end
@@ -13,6 +16,9 @@ end
 class button extends base.window_view
     var text = new string
     var on_click = new base.event
+    function construct(txt : string)
+        text = txt
+    end
     function on_draw() override
         if imgui.button(text + "##" + this.id)
             on_click.activate(this)
@@ -23,6 +29,10 @@ end
 class input extends base.window_view
     var text = new string
     var hint = new string
+    function construct(txt : string, hnt : string)
+        text = txt
+        hint = hnt
+    end
     function render() override
         this.on_render.activate(text)
         imgui.input_text(hint + "##" + this.id, text, 512)

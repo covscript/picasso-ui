@@ -1,54 +1,64 @@
-import picasso_base.*
+package picasso_window
 
-struct message_box extends base_window
-    var message=new string
-    function on_layout() override
-        text(message)
+import picasso_base as base
+import imgui, regex
+
+struct message_box extends base.simple_window
+    var message = new string
+    function construct(msg : string)
+        message = msg
     end
     function on_draw() override
-        set_window_focus()
-        spacing()
-        if button("OK") || is_key_pressed(get_key_index(keys.enter))
-            this.on_close.activate(null)
-            this.win_opened=false
+        imgui.text(message)
+        imgui.spacing()
+        if imgui.button("OK") || imgui.is_key_pressed(imgui.get_key_index(imgui.keys.enter))
+            this.on_close.activate(this)
+            this.win_opened = false
         end
     end
 end
-struct question_box extends base_window
-    var question=new string
-    function on_layout() override
-        text(question)
+
+struct question_box extends base.simple_window
+    var question = new string
+    function construct(str : string)
+        question = str
     end
     function on_draw() override
-        set_window_focus()
-        spacing()
-        if button("Yes") || is_key_pressed(to_integer('Y'))
-            this.on_close.activate(true)
-            this.win_opened=false
+        imgui.text(question)
+        imgui.spacing()
+        if imgui.button("Yes") || imgui.is_key_pressed(to_integer('Y'))
+            this.on_close.activate(this, true)
+            this.win_opened = false
         end
-        same_line()
-        if button("No") || is_key_pressed(to_integer('N'))
-            this.on_close.activate(false)
-            this.win_opened=false
+        imgui.same_line()
+        if imgui.button("No") || imgui.is_key_pressed(to_integer('N'))
+            this.on_close.activate(this, false)
+            this.win_opened = false
         end
     end
 end
-struct file_explorer extends base_window
-    var path="."
-    var message=new string
-    var filters={}
-    var path_info=null
-    var path_name=null
-    var selected=0
+
+struct file_explorer extends base.simple_window
+    var path = "."
+    var message = new string
+    var filters = {}
+    var path_info = null
+    var path_name = null
+    var selected = 0
+    function construct(msg : string, p : string, files : array)
+        message = msg
+        path = p
+        filters = files
+    end
     function read_path()
-        if path[path.size-1]!=system.path.separator
-            path+=system.path.separator
+        if path[path.size-1] != system.path.separator
+            path += system.path.separator
         end
-        path_info=new array
-        path_name=new array
-        var info=system.path.scan(path)
-        var regs=new array
-        var files=new array
+        path_info = new array
+        path_name = new array
+        var info = system.path.scan(path)
+        var regs = new array
+        var files = new array
         foreach it in filters
             regs.push_back(regex.build(it))
         end
@@ -67,51 +77,49 @@ struct file_explorer extends base_window
             path_info.push_back(it)
         end
         foreach it in path_info
-            if it.type==system.path.type.dir
-                path_name.push_back(to_string(system.path.separator)+it.name)
+            if it.type == system.path.type.dir
+                path_name.push_back(to_string(system.path.separator) + it.name)
             else
                 path_name.push_back(it.name)
             end
         end
     end
-    function on_layout() override
-        text(message)
-        separator()
-        list_box("##dir_list",selected,path_name)
-    end
     function on_draw() override
-        var info=path_info.at(selected)
-        if begin_popup_item("dir_list")
-            if menu_item("Enter","",info.type==system.path.type.dir)
-                path+=info.name
+        imgui.text(message)
+        imgui.separator()
+        imgui.list_box("##dir_list", selected, path_name)
+        var info = path_info.at(selected)
+        if imgui.begin_popup_item("dir_list")
+            if imgui.menu_item("Enter", "", info.type == system.path.type.dir)
+                path += info.name
                 read_path()
-                selected=0
+                selected = 0
             end
-            if menu_item("Select","",info.type!=system.path.type.dir)
-                this.on_close.activate(path+info.name)
-                this.win_opened=false
+            if imgui.menu_item("Select", "", info.type != system.path.type.dir)
+                this.on_close.activate(this, path + info.name)
+                this.win_opened = false
             end
-            end_popup()
+            imgui.end_popup()
         end
-        if is_item_hovered()&&is_mouse_double_clicked(0)
-            if info.type==system.path.type.dir
-                path+=info.name
+        if imgui.is_item_hovered() && imgui.is_mouse_double_clicked(0)
+            if info.type == system.path.type.dir
+                path += info.name
                 read_path()
-                selected=0
+                selected = 0
             else
-                this.on_close.activate(path+info.name)
-                this.win_opened=false
+                this.on_close.activate(this, path + info.name)
+                this.win_opened = false
             end
         end
-        separator()
-        if menu_item("Select","",info.type!=system.path.type.dir)
-            this.on_close.activate(path+info.name)
-            this.win_opened=false
+        imgui.separator()
+        if imgui.menu_item("Select", "", info.type != system.path.type.dir)
+            this.on_close.activate(this, path + info.name)
+            this.win_opened = false
         end
-        separator()
-        if menu_item("Cancel","",true)
-            this.on_close.activate(null)
-            this.win_opened=false
+        imgui.separator()
+        if imgui.menu_item("Cancel", "", true)
+            this.on_close.activate(this, null)
+            this.win_opened = false
         end
     end
 end

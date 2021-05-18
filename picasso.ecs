@@ -3,7 +3,7 @@ package picasso
 import picasso_base as base
 import picasso_activity as activities
 import picasso_widget as widgets
-# import picasso_window as windows
+import picasso_window as windows
 # import picasso_layout as layouts
 
 link simple_activity = base.simple_activity

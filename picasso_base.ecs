@@ -46,7 +46,6 @@ class simple_activity extends base_view
     var enable_menu = false
     var font = null
     # Events
-    var on_present = new event
     var on_focus = new event
     var on_lost = new event
     # Methods
@@ -70,6 +69,11 @@ class simple_activity extends base_view
         # TODO
     end
     function on_draw() override
+        foreach it in draw_list
+            it->render()
+        end
+    end
+    function render() override
         if font != null
             imgui.push_font(font)
         end
@@ -77,10 +81,8 @@ class simple_activity extends base_view
             on_menu_present()
             imgui.end_main_menu_bar()
         end
-        on_present.activate(this)
-        foreach it in draw_list
-            it->render()
-        end
+        this.on_render.activate(this)
+        on_draw()
         if font != null
             imgui.pop_font()
         end
@@ -107,7 +109,6 @@ class simple_window extends activity_view
     # Events
     var on_show = new event
     var on_close = new event
-    var on_present = new event
     # Methods
     function add_view(v)
         if v->base_type == "picasso.window_view"
@@ -139,6 +140,11 @@ class simple_window extends activity_view
         # TODO
     end
     function on_draw() override
+        foreach it in draw_list
+            it->render()
+        end
+    end
+    function render() override
         if win_opened
             imgui.begin_window(title, win_opened, win_flags)
             if !win_opened
@@ -151,10 +157,9 @@ class simple_window extends activity_view
                 on_menu_present()
                 imgui.end_menu_bar()
             end
-            on_present.activate(this)
-            foreach it in draw_list
-                it->render()
-            end
+            imgui.set_window_focus()
+            this.on_render.activate(this)
+            on_draw()
             if font != null
                 imgui.pop_font()
             end

@@ -11,8 +11,7 @@ block
     var win = app.add_activity(ui.activities.single_page, "main1")->window
     win->add_view(app.make_view(ui.widgets.text, "text"))
     win->add_view(app.make_view(ui.widgets.input, "input"))
-    win->add_view(app.make_view(ui.widgets.button, "btn"))
-    win->views.btn->text = "打开Activity 2"
+    win->add_view(app.make_view(ui.widgets.button, "btn", {"打开Activity 2"}))
     app.views.main1->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
     app.views.main1->on_focus.add_listener([](obj, txt){
         imgui.style_color_dark()
@@ -30,16 +29,29 @@ block
     var win = app.add_activity(ui.activities.single_page, "main2")->window
     win->add_view(app.make_view(ui.widgets.text, "text"))
     win->add_view(app.make_view(ui.widgets.input, "input"))
-    win->add_view(app.make_view(ui.widgets.button, "btn"))
-    win->views.btn->text = "关闭Activity 2"
+    win->add_view(app.make_view(ui.widgets.button, "btn", {"关闭Activity 2"}))
     app.views.main2->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
     app.views.main2->on_focus.add_listener([win](obj, txt){
-        imgui.style_color_light()
-        win->views.text->text = "来自Activity 1：" + txt
-        win->views.input->text = new string
+        if typeid txt == typeid string
+            imgui.style_color_light()
+            win->views.text->text = "来自Activity 1：" + txt
+            win->views.input->text = new string
+        else
+            if txt
+                app.pop(win->views.input->text)
+            end
+        end
     })
     win->views.btn->on_click.add_listener([app, win](obj){
-        app.pop(win->views.input->text)
+        app.push("main3")
+    })
+end
+
+block
+    var win = app.add_activity(ui.activities.single_page, "main3", {ui.windows.question_box})->window
+    app.views.main2->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
+    win->on_close.add_listener([](obj, val){
+        app.pop(val)
     })
 end
 
