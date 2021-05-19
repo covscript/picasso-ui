@@ -5,19 +5,29 @@ import imgui
 
 class single_page extends base.simple_activity
     var win_type = base.simple_window
+    var win_args = new array
     var window = null
-    function construct(type)
-        win_type := type
+    function construct(wtype, wargs : array)
+        win_type := wtype
+        win_args := wargs
     end
     function on_present_handler(obj)
         imgui.set_window_pos(imgui.vec2(0, 0))
         imgui.set_window_size(imgui.vec2(this.app->imgui_app.get_window_width(), this.app->imgui_app.get_window_height()))
     end
+    function on_focus_handler(...args)
+        window->show()
+    end
     function on_create() override
-        window = this.app->make_view(win_type)
+        if win_args.empty()
+            window = this.app->make_view(win_type)
+        else
+            window = this.app->make_view(win_type, this.app->gen_uid(), win_args)
+        end
         window->on_render.add_listener(on_present_handler)
         window->add_flag(imgui.flags.no_title_bar)
         this.add_view(window)
+        this.on_focus.add_listener(on_focus_handler)
         window->show()
     end
 end

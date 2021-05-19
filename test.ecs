@@ -48,8 +48,8 @@ block
 end
 
 block
-    var win = app.add_activity(ui.activities.single_page, "main3", {ui.windows.question_box})->window
-    app.views.main2->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
+    var win = app.add_activity(ui.activities.single_page, "main3", {ui.windows.question_box, {"返回Activity 1？"}})->window
+    app.views.main3->font = imgui.add_font_extend_cn(imgui_font.source_han_sans, 16)
     win->on_close.add_listener([](obj, val){
         app.pop(val)
     })
