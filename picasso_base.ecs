@@ -4,7 +4,7 @@ import imgui, regex
 
 class event
     var listeners = new array
-    function add_listener(func)
+    function add_listener(func : function)
         listeners.push_front(func)
     end
     function activate(...args)
@@ -241,12 +241,7 @@ struct application
         return uid
     end
     function make_view_s(t, id, args)
-        var v = null
-        if args.empty()
-            v = new t
-        else
-            v = new t{args...}
-        end
+        var v = new t{args...}
         v.id = id
         v.app = &this
         v.on_create()

@@ -7,7 +7,7 @@ class single_page extends base.simple_activity
     var win_type = base.simple_window
     var win_args = new array
     var window = null
-    function construct(wtype, wargs : array)
+    function construct(wtype : type, wargs : array)
         win_type := wtype
         win_args := wargs
     end

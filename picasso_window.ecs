@@ -20,18 +20,29 @@ end
 
 struct question_box extends base.simple_window
     var question = new string
-    function construct(str : string)
-        question = str
+    var yes_str = "Yes"
+    var no_str = "No"
+    function construct(...args)
+        switch args.size
+            case 1
+                question = args[0]
+            end
+            case 3
+                question = args[0]
+                yes_str = args[1]
+                no_str = args[2]
+            end
+        end
     end
     function on_draw() override
         imgui.text(question)
         imgui.spacing()
-        if imgui.button("Yes") || imgui.is_key_pressed(to_integer('Y'))
+        if imgui.button(yes_str) || imgui.is_key_pressed(to_integer('Y'))
             this.on_close.activate(this, true)
             this.win_opened = false
         end
         imgui.same_line()
-        if imgui.button("No") || imgui.is_key_pressed(to_integer('N'))
+        if imgui.button(no_str) || imgui.is_key_pressed(to_integer('N'))
             this.on_close.activate(this, false)
             this.win_opened = false
         end
