@@ -1,4 +1,4 @@
-@echo off
+#!/bin/bash
 cd $(dirname $0)
 mkdir imports
 ecs -o ./imports/ -c picasso_base.ecs
