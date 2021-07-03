@@ -39,7 +39,7 @@ block
             imgui.style_color_light()
             win->views.text->text = "来自Activity 1：" + arg
             win->views.input->text = new string
-        else
+        else if arg is boolean
             if arg
                 app.pop(win->views.input->text)
             end
