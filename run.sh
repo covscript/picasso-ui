@@ -7,7 +7,3 @@ ecs -o ./imports/ -c picasso_widget.ecs
 ecs -o ./imports/ -c picasso_window.ecs
 ecs -o ./imports/ -c picasso.ecs
 ecs -- "-i ./imports" ./test.ecs
-
-
-
-
